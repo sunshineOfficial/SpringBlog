@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.pnzgu.springblog.repositories.UserRepository;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 @Service

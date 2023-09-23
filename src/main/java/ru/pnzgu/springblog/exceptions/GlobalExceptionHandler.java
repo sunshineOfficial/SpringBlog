@@ -29,4 +29,14 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorModel> handleValidationException(ValidationException ex, WebRequest request) {
+        var errorModel = new ErrorModel();
+        errorModel.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorModel.setMessage(ex.getMessage());
+        errorModel.setTimestamp(new Date());
+
+        return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
+    }
 }
