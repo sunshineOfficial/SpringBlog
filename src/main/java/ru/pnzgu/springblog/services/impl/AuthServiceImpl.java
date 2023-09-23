@@ -13,7 +13,7 @@ import ru.pnzgu.springblog.exceptions.EntityNotFoundException;
 import ru.pnzgu.springblog.models.UserEntity;
 import ru.pnzgu.springblog.repositories.RoleRepository;
 import ru.pnzgu.springblog.repositories.UserRepository;
-import ru.pnzgu.springblog.security.AuthFacade;
+import ru.pnzgu.springblog.helpers.AuthFacade;
 import ru.pnzgu.springblog.security.JwtGenerator;
 import ru.pnzgu.springblog.services.AuthService;
 

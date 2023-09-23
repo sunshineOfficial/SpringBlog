@@ -1,4 +1,4 @@
-package ru.pnzgu.springblog.security;
+package ru.pnzgu.springblog.helpers;
 
 import org.springframework.security.core.Authentication;
 

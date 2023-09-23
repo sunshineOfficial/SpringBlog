@@ -1,8 +1,9 @@
-package ru.pnzgu.springblog.security;
+package ru.pnzgu.springblog.helpers.impl;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ru.pnzgu.springblog.helpers.AuthFacade;
 
 @Component
 public class AuthFacadeImpl implements AuthFacade {
