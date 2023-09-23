@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.pnzgu.springblog.repositories.UserRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,9 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-        var roles = new ArrayList<SimpleGrantedAuthority>();
-        roles.add(new SimpleGrantedAuthority(user.getRole().getName()));
 
-        return new User(user.getUsername(), user.getPassword(), roles);
+        return new User(user.getUsername(), user.getPassword(),
+                Collections.singleton(new SimpleGrantedAuthority(user.getRole().getName())));
     }
 }
