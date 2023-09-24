@@ -12,7 +12,7 @@ public interface PostService {
     PageDto<GetPostResponse> getAllByPublished(int pageNumber, int pageSize, boolean published);
     PageDto<GetPostResponse> getAllByUserId(int pageNumber, int pageSize, int userId);
     PageDto<GetPostResponse> getAllByUserIdAndPublished(int pageNumber, int pageSize, int userId, boolean published);
-    GetPostResponse update(UpdatePostRequest request);
+    GetPostResponse update(int id, UpdatePostRequest request);
     GetPostResponse publish(int id);
     void delete(int id);
 }
