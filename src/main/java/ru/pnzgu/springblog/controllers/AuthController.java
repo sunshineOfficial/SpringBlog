@@ -12,7 +12,7 @@ import ru.pnzgu.springblog.dto.auth.RegisterRequest;
 import ru.pnzgu.springblog.services.AuthService;
 
 @RestController
-@RequestMapping("/api/auth/")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
 
@@ -21,12 +21,12 @@ public class AuthController {
         this.authService = authService;
     }
     
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<Integer> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
     
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }

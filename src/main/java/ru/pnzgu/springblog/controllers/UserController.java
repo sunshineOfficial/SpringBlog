@@ -12,7 +12,7 @@ import ru.pnzgu.springblog.services.UserService;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
 
@@ -21,12 +21,12 @@ public class UserController {
         this.userService = userService;
     }
     
-    @GetMapping("user/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<GetUserResponse> getById(@PathVariable int id) {
         return ResponseEntity.ok(userService.getById(id));
     }
     
-    @GetMapping("user")
+    @GetMapping
     public ResponseEntity<PageDto<GetUserResponse>> getAll(
             @RequestParam(defaultValue = "0", required = false) int pageNumber,
             @RequestParam(defaultValue = "10", required = false) int pageSize,
@@ -39,17 +39,17 @@ public class UserController {
         return ResponseEntity.ok(userService.getAll(pageNumber, pageSize));
     }
     
-    @PutMapping("user/password")
+    @PutMapping("/password")
     public ResponseEntity<GetUserResponse> changePassword(@RequestBody ChangeUserPasswordRequest request) {
         return ResponseEntity.ok(userService.changePassword(request));
     }
     
-    @PutMapping("user/role")
+    @PutMapping("/role")
     public ResponseEntity<GetUserResponse> changeRole(@RequestBody ChangeRoleRequest request) {
         return ResponseEntity.ok(userService.changeRole(request));
     }
     
-    @DeleteMapping("user/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
         userService.delete(id);
         return ResponseEntity.ok("User deleted successfully");
