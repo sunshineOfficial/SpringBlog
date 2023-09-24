@@ -30,4 +30,8 @@ public class Role {
 
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Role(String name) {
+        this.name = name;
+    }
 }
