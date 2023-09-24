@@ -43,4 +43,10 @@ public class Post {
     private Date updatedAt;
     
     private Date publishedAt;
+
+    public Post(UserEntity user, String title, String content) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+    }
 }

@@ -40,4 +40,10 @@ public class Comment {
     private Date updatedAt;
 
     private Date publishedAt;
+
+    public Comment(UserEntity user, Post post, String content) {
+        this.user = user;
+        this.post = post;
+        this.content = content;
+    }
 }

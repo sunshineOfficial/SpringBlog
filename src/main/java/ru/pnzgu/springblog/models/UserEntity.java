@@ -46,4 +46,12 @@ public class UserEntity {
 
     @UpdateTimestamp
     private Date updatedAt;
+
+    public UserEntity(Role role, String username, String password, String firstName, String lastName) {
+        this.role = role;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }

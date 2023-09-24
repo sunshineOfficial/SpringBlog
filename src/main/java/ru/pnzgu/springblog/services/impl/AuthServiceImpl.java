@@ -41,15 +41,10 @@ public class AuthServiceImpl implements AuthService {
     public int register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername()))
             throw new EntityAlreadyExistsException("Username is taken");
-        
-        var user = new UserEntity();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        
+
         var role = roleRepository.findByName("User").orElseThrow(() -> new EntityNotFoundException("Role not found"));
-        user.setRole(role);
+        var user = new UserEntity(role, request.getUsername(), passwordEncoder.encode(request.getPassword()),
+                request.getFirstName(), request.getLastName());
         
         var newUser = userRepository.save(user);
         
