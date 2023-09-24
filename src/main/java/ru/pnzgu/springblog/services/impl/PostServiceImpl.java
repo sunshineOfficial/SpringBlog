@@ -17,6 +17,8 @@ import ru.pnzgu.springblog.repositories.PostRepository;
 import ru.pnzgu.springblog.repositories.UserRepository;
 import ru.pnzgu.springblog.services.PostService;
 
+import java.util.Date;
+
 @Service
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
@@ -109,7 +111,12 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public GetPostResponse publish(int id) {
         var post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        
+        if (post.isPublished())
+            throw new ValidationException("Post already published");
+        
         post.setPublished(true);
+        post.setPublishedAt(new Date());
 
         var updatedPost = postRepository.save(post);
 
