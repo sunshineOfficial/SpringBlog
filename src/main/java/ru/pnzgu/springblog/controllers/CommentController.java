@@ -1,5 +1,6 @@
 package ru.pnzgu.springblog.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class CommentController {
     }
     
     @PostMapping
-    public ResponseEntity<Integer> create(@RequestBody CreateCommentRequest request) {
+    public ResponseEntity<Integer> create(@Valid @RequestBody CreateCommentRequest request) {
         return ResponseEntity.ok(commentService.create(request));
     }
     
@@ -78,7 +79,7 @@ public class CommentController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<GetCommentResponse> changeContent(@PathVariable int id, @RequestBody ChangeCommentContentRequest request) {
+    public ResponseEntity<GetCommentResponse> changeContent(@PathVariable int id, @Valid @RequestBody ChangeCommentContentRequest request) {
         return ResponseEntity.ok(commentService.changeContent(id, request));
     }
     

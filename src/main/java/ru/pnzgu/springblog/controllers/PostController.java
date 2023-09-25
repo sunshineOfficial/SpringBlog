@@ -1,5 +1,6 @@
 package ru.pnzgu.springblog.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class PostController {
     }
     
     @PostMapping
-    public ResponseEntity<Integer> create(@RequestBody CreatePostRequest request) {
+    public ResponseEntity<Integer> create(@Valid @RequestBody CreatePostRequest request) {
         return ResponseEntity.ok(postService.create(request));
     }
     
@@ -52,7 +53,7 @@ public class PostController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<GetPostResponse> update(@PathVariable int id, @RequestBody UpdatePostRequest request) {
+    public ResponseEntity<GetPostResponse> update(@PathVariable int id, @Valid @RequestBody UpdatePostRequest request) {
         return ResponseEntity.ok(postService.update(id, request));
     }
     

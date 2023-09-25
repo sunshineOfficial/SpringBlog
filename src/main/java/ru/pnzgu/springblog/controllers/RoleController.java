@@ -1,5 +1,6 @@
 package ru.pnzgu.springblog.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class RoleController {
     }
     
     @PostMapping
-    public ResponseEntity<Integer> create(@RequestBody CreateRoleRequest request) {
+    public ResponseEntity<Integer> create(@Valid @RequestBody CreateRoleRequest request) {
         return ResponseEntity.ok(roleService.create(request));
     }
     
@@ -38,7 +39,7 @@ public class RoleController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<GetRoleResponse> changeName(@PathVariable int id, @RequestBody ChangeRoleNameRequest request) {
+    public ResponseEntity<GetRoleResponse> changeName(@PathVariable int id, @Valid @RequestBody ChangeRoleNameRequest request) {
         return ResponseEntity.ok(roleService.changeName(id, request));
     }
     

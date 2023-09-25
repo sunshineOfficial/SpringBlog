@@ -1,5 +1,6 @@
 package ru.pnzgu.springblog.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,12 +41,12 @@ public class UserController {
     }
     
     @PutMapping("/password")
-    public ResponseEntity<GetUserResponse> changePassword(@RequestBody ChangeUserPasswordRequest request) {
+    public ResponseEntity<GetUserResponse> changePassword(@Valid @RequestBody ChangeUserPasswordRequest request) {
         return ResponseEntity.ok(userService.changePassword(request));
     }
     
     @PutMapping("/{id}/role")
-    public ResponseEntity<GetUserResponse> changeRole(@PathVariable int id, @RequestBody ChangeRoleRequest request) {
+    public ResponseEntity<GetUserResponse> changeRole(@PathVariable int id, @Valid @RequestBody ChangeRoleRequest request) {
         return ResponseEntity.ok(userService.changeRole(id, request));
     }
     
