@@ -13,17 +13,16 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class Comment {
-    @EmbeddedId
-    private CommentKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     
-    @ManyToOne
-    @MapsId("userId")
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne
-    @MapsId("postId")
-    @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
     
     @Lob

@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 public class GetCommentResponse {
+    private int id;
     private int userId;
     private int postId;
     private String content;
