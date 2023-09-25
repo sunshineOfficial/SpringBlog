@@ -34,8 +34,8 @@ public class SecurityConfig {
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(c -> c
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/role/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .requestMatchers("/api/role/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(getJwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
