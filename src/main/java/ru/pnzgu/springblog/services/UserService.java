@@ -11,6 +11,6 @@ public interface UserService {
     PageDto<GetUserResponse> getAllByRoleId(int pageNumber, int pageSize, int roleId);
     PageDto<GetUserResponse> getAllByRoleName(int pageNumber, int pageSize, String name);
     GetUserResponse changePassword(ChangeUserPasswordRequest request);
-    GetUserResponse changeRole(ChangeRoleRequest request);
+    GetUserResponse changeRole(int id, ChangeRoleRequest request);
     void delete(int id);
 }

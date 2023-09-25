@@ -2,12 +2,14 @@ package ru.pnzgu.springblog.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.pnzgu.springblog.dto.common.PageDto;
 import ru.pnzgu.springblog.dto.user.ChangeRoleRequest;
 import ru.pnzgu.springblog.dto.user.ChangeUserPasswordRequest;
 import ru.pnzgu.springblog.dto.user.GetUserResponse;
+import ru.pnzgu.springblog.exceptions.AccessDeniedException;
 import ru.pnzgu.springblog.exceptions.EntityNotFoundException;
 import ru.pnzgu.springblog.exceptions.ValidationException;
 import ru.pnzgu.springblog.helpers.AuthFacade;
@@ -85,9 +87,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserResponse changeRole(ChangeRoleRequest request) {
-        var username = authFacade.getAuth().getName();
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public GetUserResponse changeRole(int id, ChangeRoleRequest request) {
+        var authorities = authFacade.getAuth().getAuthorities();
+        
+        if (!authorities.contains(new SimpleGrantedAuthority("ADMIN")))
+            throw new AccessDeniedException("Access denied");
+        
+        var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         var role = roleRepository.findById(request.getRoleId()).orElseThrow(() -> new EntityNotFoundException("Role not found"));
         
         user.setRole(role);
@@ -99,6 +105,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(int id) {
+        var authorities = authFacade.getAuth().getAuthorities();
+        var username = authFacade.getAuth().getName();
+        var currentUser = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (!authorities.contains(new SimpleGrantedAuthority("ADMIN")) && currentUser.getId() != id)
+            throw new AccessDeniedException("Access denied");
+        
         var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         userRepository.delete(user);
     }

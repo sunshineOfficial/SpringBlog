@@ -3,11 +3,13 @@ package ru.pnzgu.springblog.services.impl;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.pnzgu.springblog.dto.comment.ChangeCommentContentRequest;
 import ru.pnzgu.springblog.dto.comment.CreateCommentRequest;
 import ru.pnzgu.springblog.dto.comment.GetCommentResponse;
 import ru.pnzgu.springblog.dto.common.PageDto;
+import ru.pnzgu.springblog.exceptions.AccessDeniedException;
 import ru.pnzgu.springblog.exceptions.EntityNotFoundException;
 import ru.pnzgu.springblog.exceptions.ValidationException;
 import ru.pnzgu.springblog.helpers.AuthFacade;
@@ -149,6 +151,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public GetCommentResponse publish(int id) {
+        var authorities = authFacade.getAuth().getAuthorities();
+
+        if (!authorities.contains(new SimpleGrantedAuthority("ADMIN")) &&
+                !authorities.contains(new SimpleGrantedAuthority("MODERATOR")))
+            throw new AccessDeniedException("Access denied");
+        
         var comment = commentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Comment not found"));
         
         if (comment.isPublished())
@@ -165,6 +173,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void delete(int id) {
         var comment = commentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+        var authorities = authFacade.getAuth().getAuthorities();
+        var username = authFacade.getAuth().getName();
+        var currentUser = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (!authorities.contains(new SimpleGrantedAuthority("ADMIN")) &&
+                !authorities.contains(new SimpleGrantedAuthority("MODERATOR")) &&
+                currentUser.getId() != comment.getUser().getId())
+            throw new AccessDeniedException("Access denied");
+
         commentRepository.delete(comment);
     }
 

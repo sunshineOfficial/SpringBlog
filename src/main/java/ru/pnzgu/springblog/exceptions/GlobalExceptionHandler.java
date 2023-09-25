@@ -39,4 +39,14 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorModel, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorModel> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        var errorModel = new ErrorModel();
+        errorModel.setStatusCode(HttpStatus.FORBIDDEN.value());
+        errorModel.setMessage(ex.getMessage());
+        errorModel.setTimestamp(new Date());
+
+        return new ResponseEntity<>(errorModel, HttpStatus.FORBIDDEN);
+    }
 }

@@ -44,9 +44,9 @@ public class UserController {
         return ResponseEntity.ok(userService.changePassword(request));
     }
     
-    @PutMapping("/role")
-    public ResponseEntity<GetUserResponse> changeRole(@RequestBody ChangeRoleRequest request) {
-        return ResponseEntity.ok(userService.changeRole(request));
+    @PutMapping("/{id}/role")
+    public ResponseEntity<GetUserResponse> changeRole(@PathVariable int id, @RequestBody ChangeRoleRequest request) {
+        return ResponseEntity.ok(userService.changeRole(id, request));
     }
     
     @DeleteMapping("/{id}")
