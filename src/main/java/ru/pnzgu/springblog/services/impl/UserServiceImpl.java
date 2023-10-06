@@ -38,6 +38,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public GetUserResponse getCurrentUser() {
+        var username = authFacade.getAuth().getName();
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return mapToResponse(user);
+    }
+
+    @Override
     public GetUserResponse getById(int id) {
         var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         
