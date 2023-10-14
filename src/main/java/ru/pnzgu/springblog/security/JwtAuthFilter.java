@@ -14,6 +14,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Компонент, представляющий фильтр для обработки аутентификации с использованием JWT.
+ */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
@@ -21,6 +24,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * Выполняет основную логику фильтрации запросов.
+     * 
+     * @param request           объект HttpServletRequest, представляющий текущий HTTP-запрос
+     * @param response          объект HttpServletResponse, представляющий текущий HTTP-ответ
+     * @param filterChain       объект FilterChain для передачи запроса дальше по цепочке фильтров
+     * @throws ServletException если возникает ошибка сервлета при обработке запроса
+     * @throws IOException      если возникает ошибка ввода-вывода при обработке запроса
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = getJwtFromRequest(request);
@@ -36,6 +48,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Извлекает JWT из HTTP-запроса.
+     * 
+     * @param request объект HttpServletRequest, представляющий текущий HTTP-запрос
+     * @return строку, содержащую JWT, или null, если токен отсутствует
+     */
     private String getJwtFromRequest(HttpServletRequest request) {
         var bearerToken = request.getHeader("Authorization");
 

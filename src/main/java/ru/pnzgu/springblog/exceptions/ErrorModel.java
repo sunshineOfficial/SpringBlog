@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * Класс, представляющий ответ на запрос, содержащий ошибку.
+ */
 @Data
 public class ErrorModel {
     private int statusCode;

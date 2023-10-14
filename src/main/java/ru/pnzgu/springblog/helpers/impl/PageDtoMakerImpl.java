@@ -7,8 +7,21 @@ import ru.pnzgu.springblog.helpers.PageDtoMaker;
 
 import java.util.function.Function;
 
+/**
+ * Класс для создания PageDto.
+ *
+ * @param <E> Entity
+ * @param <D> DTO
+ */
 @Component
 public class PageDtoMakerImpl<E, D> implements PageDtoMaker<E, D> {
+    /**
+     * Создает PageDto.
+     *
+     * @param page        объект Page, представляющий страницу
+     * @param mapFunction функция маппинга сущности в DTO
+     * @return PageDto, содержащий объекты типа T
+     */
     @Override
     public PageDto<D> makePageDto(Page<E> page, Function<E, D> mapFunction) {
         var content = page.getContent().stream().map(mapFunction).toList();

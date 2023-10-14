@@ -12,6 +12,9 @@ import ru.pnzgu.springblog.services.PostService;
 
 import java.util.Optional;
 
+/**
+ * Контроллер постов.
+ */
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
@@ -21,17 +24,38 @@ public class PostController {
     public PostController(PostService postService) {
         this.postService = postService;
     }
-    
+
+    /**
+     * Создает новый пост. 
+     *
+     * @param request запрос на создание поста 
+     * @return ответ с кодом состояния 200 (ОК) и идентификатором созданного поста 
+     */
     @PostMapping
     public ResponseEntity<Integer> create(@Valid @RequestBody CreatePostRequest request) {
         return ResponseEntity.ok(postService.create(request));
     }
-    
+
+    /**
+     * Получает пост по указанному идентификатору. 
+     *
+     * @param id идентификатор поста 
+     * @return ответ с кодом состояния 200 (ОК), содержащим пост с указанным идентификатором 
+     */
     @GetMapping("/{id}")
     public ResponseEntity<GetPostResponse> getById(@PathVariable int id) {
         return ResponseEntity.ok(postService.getById(id));
     }
-    
+
+    /**
+     * Возвращает список постов с возможностью фильтрации по параметрам. 
+     *
+     * @param pageNumber номер страницы 
+     * @param pageSize   количество постов на странице 
+     * @param userId     идентификатор пользователя, чьи посты нужно отобразить 
+     * @param published  флаг, указывающий, опубликованы ли посты 
+     * @return ответ с кодом состояния 200 (ОК), содержащим список постов с учетом фильтрации 
+     */
     @GetMapping
     public ResponseEntity<PageDto<GetPostResponse>> getAll(
             @RequestParam(defaultValue = "0", required = false) int pageNumber,
@@ -51,17 +75,36 @@ public class PostController {
         
         return ResponseEntity.ok(postService.getAll(pageNumber, pageSize));
     }
-    
+
+    /**
+     * Обновляет пост по заданному идентификатору. 
+     *
+     * @param id      идентификатор поста 
+     * @param request объект запроса на обновление поста
+     * @return ответ с кодом состояния 200 (ОК), содержащим обновленный пост
+     */
     @PutMapping("/{id}")
     public ResponseEntity<GetPostResponse> update(@PathVariable int id, @Valid @RequestBody UpdatePostRequest request) {
         return ResponseEntity.ok(postService.update(id, request));
     }
-    
+
+    /**
+     * Выполняет публикацию поста с указанным идентификатором. 
+     *
+     * @param id идентификатор поста 
+     * @return ответ с кодом состояния 200 (ОК), содержащим опубликованный пост
+     */
     @PutMapping("/{id}/publish")
     public ResponseEntity<GetPostResponse> publish(@PathVariable int id) {
         return ResponseEntity.ok(postService.publish(id));
     }
-    
+
+    /**
+     * Удаляет пост по указанному идентификатору. 
+     *
+     * @param id идентификатор поста 
+     * @return ответ с сообщением об успешном удалении поста 
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
         postService.delete(id);

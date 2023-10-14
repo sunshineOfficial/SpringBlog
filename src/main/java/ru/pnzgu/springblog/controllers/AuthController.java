@@ -12,6 +12,9 @@ import ru.pnzgu.springblog.dto.auth.LoginResponse;
 import ru.pnzgu.springblog.dto.auth.RegisterRequest;
 import ru.pnzgu.springblog.services.AuthService;
 
+/**
+ * Контроллер аутентификации и регистрации пользователей.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -21,12 +24,24 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-    
+
+    /**
+     * Регистрирует нового пользователя. 
+     *
+     * @param request объект запроса на регистрацию 
+     * @return код ответа и идентификатор зарегистрированного пользователя 
+     */
     @PostMapping("/register")
     public ResponseEntity<Integer> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
-    
+
+    /**
+     * Аутентифицирует пользователя. 
+     *
+     * @param request объект запроса на аутентификацию 
+     * @return код ответа и информацию об аутентифицированном пользователе 
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));

@@ -19,6 +19,9 @@ import ru.pnzgu.springblog.repositories.RoleRepository;
 import ru.pnzgu.springblog.repositories.UserRepository;
 import ru.pnzgu.springblog.services.UserService;
 
+/**
+ * Класс сервиса пользователей.
+ */
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -37,6 +40,11 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * Получает пользователя, отправившего запрос. 
+     *
+     * @return пользователя
+     */
     @Override
     public GetUserResponse getCurrentUser() {
         var username = authFacade.getAuth().getName();
@@ -45,6 +53,12 @@ public class UserServiceImpl implements UserService {
         return mapToResponse(user);
     }
 
+    /**
+     * Получает пользователя по указанному идентификатору. 
+     *
+     * @param id идентификатор пользователя 
+     * @return пользователя с указанным идентификатором 
+     */
     @Override
     public GetUserResponse getById(int id) {
         var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -52,6 +66,13 @@ public class UserServiceImpl implements UserService {
         return mapToResponse(user);
     }
 
+    /**
+     * Получает всех пользователей.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество пользователей на странице
+     * @return объект PageDto, содержащий пользователей
+     */
     @Override
     public PageDto<GetUserResponse> getAll(int pageNumber, int pageSize) {
         var pageRequest = PageRequest.of(pageNumber, pageSize);
@@ -60,6 +81,14 @@ public class UserServiceImpl implements UserService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает всех пользователей, отфильтрованных по идентификатору роли.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество пользователей на странице
+     * @param roleId     идентификатор роли, которую должен иметь пользователь
+     * @return объект PageDto, содержащий пользователей
+     */
     @Override
     public PageDto<GetUserResponse> getAllByRoleId(int pageNumber, int pageSize, int roleId) {
         var pageRequest = PageRequest.of(pageNumber, pageSize);
@@ -68,6 +97,14 @@ public class UserServiceImpl implements UserService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает всех пользователей, отфильтрованных по названию роли.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество пользователей на странице
+     * @param name       название роли, которую должен иметь пользователь
+     * @return объект PageDto, содержащий пользователей
+     */
     @Override
     public PageDto<GetUserResponse> getAllByRoleName(int pageNumber, int pageSize, String name) {
         var pageRequest = PageRequest.of(pageNumber, pageSize);
@@ -76,6 +113,12 @@ public class UserServiceImpl implements UserService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Меняет пароль пользователя. 
+     *
+     * @param request объект запроса на смену пароля
+     * @return пользователя
+     */
     @Override
     public GetUserResponse changePassword(ChangeUserPasswordRequest request) {
         var username = authFacade.getAuth().getName();
@@ -94,6 +137,13 @@ public class UserServiceImpl implements UserService {
         return mapToResponse(updatedUser);
     }
 
+    /**
+     * Меняет роль пользователя. 
+     *
+     * @param id      идентификатор пользователя
+     * @param request объект запроса на смену роли
+     * @return обновленного пользователя
+     */
     @Override
     public GetUserResponse changeRole(int id, ChangeRoleRequest request) {
         var authorities = authFacade.getAuth().getAuthorities();
@@ -111,6 +161,11 @@ public class UserServiceImpl implements UserService {
         return mapToResponse(updatedUser);
     }
 
+    /**
+     * Удаляет пользователя по указанному идентификатору. 
+     *
+     * @param id идентификатор пользователя
+     */
     @Override
     public void delete(int id) {
         var authorities = authFacade.getAuth().getAuthorities();
@@ -123,7 +178,13 @@ public class UserServiceImpl implements UserService {
         var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         userRepository.delete(user);
     }
-    
+
+    /**
+     * Преобразует UserEntity в GetUserResponse.
+     *
+     * @param user объект UserEntity, который будет преобразован
+     * @return объект GetUserResponse, содержащий данные из объекта UserEntity
+     */
     private GetUserResponse mapToResponse(UserEntity user) {
         return new GetUserResponse(user.getId(), user.getRole().getId(), user.getUsername(), user.getFirstName(),
                 user.getLastName(), user.getCreatedAt(), user.getUpdatedAt());

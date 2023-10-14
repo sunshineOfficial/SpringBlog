@@ -10,10 +10,19 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * Компонент, предоставляющий методы для генерации, извлечения и проверки JWT.
+ */
 @Component
 public class JwtGenerator {
     private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
+    /**
+     * Генерирует JWT на основе аутентификации.
+     * 
+     * @param authentication объект Authentication, представляющий информацию об аутентификации
+     * @return строку, содержащую сгенерированный JWT
+     */
     public String generateToken(Authentication authentication) {
         var username = authentication.getName();
         var currentDate = new Date();
@@ -27,6 +36,12 @@ public class JwtGenerator {
                 .compact();
     }
 
+    /**
+     * Извлекает логин пользователя из JWT.
+     * 
+     * @param token строка, содержащая JWT
+     * @return логин, извлеченный из JWT
+     */
     public String getUsernameFromJwt(String token) {
         var claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -37,6 +52,12 @@ public class JwtGenerator {
         return claims.getSubject();
     }
 
+    /**
+     * Проверяет, является ли JWT действительным.
+     * 
+     * @param token строка, содержащая JWT
+     * @return true, если токен действительный, иначе false
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()

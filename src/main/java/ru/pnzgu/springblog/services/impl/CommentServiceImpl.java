@@ -22,6 +22,9 @@ import ru.pnzgu.springblog.services.CommentService;
 
 import java.util.Date;
 
+/**
+ * Класс сервиса комментариев.
+ */
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
@@ -39,6 +42,12 @@ public class CommentServiceImpl implements CommentService {
         this.pageDtoMaker = pageDtoMaker;
     }
 
+    /**
+     * Создает новый комментарий.
+     *
+     * @param request запрос на создание комментария
+     * @return идентификатор созданного комментария
+     */
     @Override
     public int create(CreateCommentRequest request) {
         var username = authFacade.getAuth().getName();
@@ -51,6 +60,12 @@ public class CommentServiceImpl implements CommentService {
         return newComment.getId();
     }
 
+    /**
+     * Получает комментарий по указанному идентификатору.
+     *
+     * @param id идентификатор комментария
+     * @return комментарий с указанным идентификатором
+     */
     @Override
     @Transactional
     public GetCommentResponse getById(int id) {
@@ -59,6 +74,13 @@ public class CommentServiceImpl implements CommentService {
         return mapToResponse(comment);
     }
 
+    /**
+     * Получает все комментарии.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAll(int pageNumber, int pageSize) {
@@ -68,6 +90,14 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все комментарии, отфильтрованные по флагу published.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @param published  флаг, указывающий, опубликован ли комментарий
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAllByPublished(int pageNumber, int pageSize, boolean published) {
@@ -77,6 +107,14 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все комментарии, отфильтрованные по идентификатору пользователя.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @param userId     идентификатор пользователя, создавшего комментарий
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAllByUserId(int pageNumber, int pageSize, int userId) {
@@ -86,6 +124,15 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все комментарии, отфильтрованные по идентификатору пользователя и флагу published.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @param userId     идентификатор пользователя, создавшего комментарий
+     * @param published  флаг, указывающий, опубликован ли комментарий
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAllByUserIdAndPublished(int pageNumber, int pageSize, int userId, boolean published) {
@@ -95,6 +142,14 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все комментарии, отфильтрованные по идентификатору поста.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @param postId     идентификатор поста, к которому относится комментарий
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAllByPostId(int pageNumber, int pageSize, int postId) {
@@ -104,6 +159,15 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все комментарии, отфильтрованные по идентификатору поста и флагу published.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @param postId     идентификатор поста, к которому относится комментарий
+     * @param published  флаг, указывающий, опубликован ли комментарий
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAllByPostIdAndPublished(int pageNumber, int pageSize, int postId, boolean published) {
@@ -113,6 +177,15 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все комментарии, отфильтрованные по идентификатору пользователя и идентификатору поста.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @param userId     идентификатор пользователя, создавшего комментарий
+     * @param postId     идентификатор поста, к которому относится комментарий
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAllByUserIdAndPostId(int pageNumber, int pageSize, int userId, int postId) {
@@ -122,6 +195,16 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все комментарии, отфильтрованные по идентификатору пользователя, идентификатору поста и флагу published.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество комментариев на странице
+     * @param userId     идентификатор пользователя, создавшего комментарий
+     * @param postId     идентификатор поста, к которому относится комментарий
+     * @param published  флаг, указывающий, опубликован ли комментарий
+     * @return объект PageDto, содержащий комментарии
+     */
     @Override
     @Transactional
     public PageDto<GetCommentResponse> getAllByUserIdAndPostIdAndPublished(int pageNumber, int pageSize, int userId, int postId, boolean published) {
@@ -131,6 +214,13 @@ public class CommentServiceImpl implements CommentService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Изменяет содержимое комментария по заданному идентификатору.
+     *
+     * @param id      идентификатор комментария
+     * @param request объект запроса на изменение содержимого комментария
+     * @return измененный комментарий
+     */
     @Override
     @Transactional
     public GetCommentResponse changeContent(int id, ChangeCommentContentRequest request) {
@@ -148,6 +238,12 @@ public class CommentServiceImpl implements CommentService {
         return mapToResponse(updatedComment);
     }
 
+    /**
+     * Выполняет публикацию комментария с указанным идентификатором.
+     *
+     * @param id идентификатор комментария
+     * @return опубликованный комментарий
+     */
     @Override
     @Transactional
     public GetCommentResponse publish(int id) {
@@ -170,6 +266,11 @@ public class CommentServiceImpl implements CommentService {
         return mapToResponse(updatedComment);
     }
 
+    /**
+     * Удаляет комментарий по указанному идентификатору.
+     *
+     * @param id идентификатор комментария
+     */
     @Override
     public void delete(int id) {
         var comment = commentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Comment not found"));
@@ -185,6 +286,12 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
+    /**
+     * Преобразует Comment в GetCommentResponse.
+     * 
+     * @param comment объект Comment, который будет преобразован
+     * @return объект GetCommentResponse, содержащий данные из объекта Comment
+     */
     private GetCommentResponse mapToResponse(Comment comment) {
         return new GetCommentResponse(comment.getId(), comment.getUser().getId(), comment.getPost().getId(),
                 comment.getContent(), comment.isPublished(), comment.getCreatedAt(), comment.getUpdatedAt(),

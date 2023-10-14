@@ -5,6 +5,9 @@ import lombok.Data;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Класс, представляющий ответ на запрос, содержащий ошибку валидации.
+ */
 @Data
 public class ValidationErrorModel {
     private int statusCode;

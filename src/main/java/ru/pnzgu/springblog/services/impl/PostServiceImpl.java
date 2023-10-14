@@ -21,6 +21,9 @@ import ru.pnzgu.springblog.services.PostService;
 
 import java.util.Date;
 
+/**
+ * Класс сервиса постов.
+ */
 @Service
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
@@ -36,6 +39,12 @@ public class PostServiceImpl implements PostService {
         this.pageDtoMaker = pageDtoMaker;
     }
 
+    /**
+     * Создает новый пост. 
+     *
+     * @param request запрос на создание поста 
+     * @return идентификатор созданного поста 
+     */
     @Override
     public int create(CreatePostRequest request) {
         var username = authFacade.getAuth().getName();
@@ -47,6 +56,12 @@ public class PostServiceImpl implements PostService {
         return newPost.getId();
     }
 
+    /**
+     * Получает пост по указанному идентификатору. 
+     *
+     * @param id идентификатор поста 
+     * @return пост с указанным идентификатором 
+     */
     @Override
     @Transactional
     public GetPostResponse getById(int id) {
@@ -55,6 +70,13 @@ public class PostServiceImpl implements PostService {
         return mapToResponse(post);
     }
 
+    /**
+     * Получает все посты.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество постов на странице
+     * @return объект PageDto, содержащий посты
+     */
     @Override
     @Transactional
     public PageDto<GetPostResponse> getAll(int pageNumber, int pageSize) {
@@ -64,6 +86,14 @@ public class PostServiceImpl implements PostService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все посты, отфильтрованные по флагу published.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество постов на странице
+     * @param published  флаг, указывающий, опубликован ли пост
+     * @return объект PageDto, содержащий посты
+     */
     @Override
     @Transactional
     public PageDto<GetPostResponse> getAllByPublished(int pageNumber, int pageSize, boolean published) {
@@ -73,6 +103,14 @@ public class PostServiceImpl implements PostService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все посты, отфильтрованные по идентификатору пользователя.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество постов на странице
+     * @param userId     идентификатор пользователя, создавшего пост
+     * @return объект PageDto, содержащий посты
+     */
     @Override
     @Transactional
     public PageDto<GetPostResponse> getAllByUserId(int pageNumber, int pageSize, int userId) {
@@ -82,6 +120,15 @@ public class PostServiceImpl implements PostService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Получает все посты, отфильтрованные по идентификатору пользователя и флагу published.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество постов на странице
+     * @param userId     идентификатор пользователя, создавшего пост
+     * @param published  флаг, указывающий, опубликован ли пост
+     * @return объект PageDto, содержащий посты
+     */
     @Override
     @Transactional
     public PageDto<GetPostResponse> getAllByUserIdAndPublished(int pageNumber, int pageSize, int userId, boolean published) {
@@ -91,6 +138,13 @@ public class PostServiceImpl implements PostService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Обновляет пост по заданному идентификатору. 
+     *
+     * @param id      идентификатор поста 
+     * @param request объект запроса на обновление поста
+     * @return обновленный пост
+     */
     @Override
     @Transactional
     public GetPostResponse update(int id, UpdatePostRequest request) {
@@ -109,6 +163,12 @@ public class PostServiceImpl implements PostService {
         return mapToResponse(updatedPost);
     }
 
+    /**
+     * Выполняет публикацию поста с указанным идентификатором. 
+     *
+     * @param id идентификатор поста 
+     * @return опубликованный пост
+     */
     @Override
     @Transactional
     public GetPostResponse publish(int id) {
@@ -131,6 +191,11 @@ public class PostServiceImpl implements PostService {
         return mapToResponse(updatedPost);
     }
 
+    /**
+     * Удаляет пост по указанному идентификатору. 
+     *
+     * @param id идентификатор поста
+     */
     @Override
     public void delete(int id) {
         var authorities = authFacade.getAuth().getAuthorities();
@@ -145,7 +210,13 @@ public class PostServiceImpl implements PostService {
         
         postRepository.delete(post);
     }
-    
+
+    /**
+     * Преобразует Post в GetPostResponse.
+     *
+     * @param post объект Post, который будет преобразован
+     * @return объект GetPostResponse, содержащий данные из объекта Post
+     */
     private GetPostResponse mapToResponse(Post post) {
         return new GetPostResponse(post.getId(), post.getUser().getId(), post.getTitle(), post.getContent(),
                 post.isPublished(), post.getCreatedAt(), post.getUpdatedAt(), post.getPublishedAt());

@@ -17,6 +17,9 @@ import ru.pnzgu.springblog.helpers.AuthFacade;
 import ru.pnzgu.springblog.security.JwtGenerator;
 import ru.pnzgu.springblog.services.AuthService;
 
+/**
+ * Класс сервиса аутентификации и регистрации пользователей.
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
@@ -37,6 +40,13 @@ public class AuthServiceImpl implements AuthService {
         this.jwtGenerator = jwtGenerator;
     }
 
+
+    /**
+     * Регистрирует нового пользователя.
+     *
+     * @param request объект запроса на регистрацию
+     * @return идентификатор зарегистрированного пользователя
+     */
     @Override
     public int register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername()))
@@ -51,6 +61,12 @@ public class AuthServiceImpl implements AuthService {
         return newUser.getId();
     }
 
+    /**
+     * Аутентифицирует пользователя.
+     *
+     * @param request объект запроса на аутентификацию
+     * @return информацию об аутентифицированном пользователе
+     */
     @Override
     public LoginResponse login(LoginRequest request) {
         var auth = authenticationManager.authenticate(

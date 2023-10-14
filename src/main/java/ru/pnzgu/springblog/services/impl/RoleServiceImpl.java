@@ -16,6 +16,9 @@ import ru.pnzgu.springblog.services.RoleService;
 
 import java.util.Objects;
 
+/**
+ * Класс сервиса ролей пользователя.
+ */
 @Service
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
@@ -27,6 +30,12 @@ public class RoleServiceImpl implements RoleService {
         this.pageDtoMaker = pageDtoMaker;
     }
 
+    /**
+     * Создает новую роль. 
+     *
+     * @param request запрос на создание роли 
+     * @return идентификатор созданной роли 
+     */
     @Override
     public int create(CreateRoleRequest request) {
         if (roleRepository.existsByName(request.getName()))
@@ -37,6 +46,12 @@ public class RoleServiceImpl implements RoleService {
         return newRole.getId();
     }
 
+    /**
+     * Получает роль по указанному идентификатору. 
+     *
+     * @param id идентификатор роли 
+     * @return роль с указанным идентификатором 
+     */
     @Override
     public GetRoleResponse getById(int id) {
         var role = roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role not found"));
@@ -44,6 +59,13 @@ public class RoleServiceImpl implements RoleService {
         return mapToResponse(role);
     }
 
+    /**
+     * Получает все роли.
+     *
+     * @param pageNumber номер страницы
+     * @param pageSize   количество ролей на странице
+     * @return объект PageDto, содержащий роли
+     */
     @Override
     public PageDto<GetRoleResponse> getAll(int pageNumber, int pageSize) {
         var pageRequest = PageRequest.of(pageNumber, pageSize);
@@ -52,6 +74,13 @@ public class RoleServiceImpl implements RoleService {
         return pageDtoMaker.makePageDto(page, this::mapToResponse);
     }
 
+    /**
+     * Обновляет роль по заданному идентификатору. 
+     *
+     * @param id      идентификатор роли 
+     * @param request объект запроса на обновление роли
+     * @return обновленная роль
+     */
     @Override
     public GetRoleResponse changeName(int id, ChangeRoleNameRequest request) {
         var role = roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role not found"));
@@ -66,12 +95,23 @@ public class RoleServiceImpl implements RoleService {
         return mapToResponse(updatedRole);
     }
 
+    /**
+     * Удаляет роль по указанному идентификатору. 
+     *
+     * @param id идентификатор роли
+     */
     @Override
     public void delete(int id) {
         var role = roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role not found"));
         roleRepository.delete(role);
     }
-    
+
+    /**
+     * Преобразует Role в GetRoleResponse.
+     *
+     * @param role объект Role, который будет преобразован
+     * @return объект GetRoleResponse, содержащий данные из объекта Role
+     */
     private GetRoleResponse mapToResponse(Role role) {
         return new GetRoleResponse(role.getId(), role.getName(), role.getCreatedAt(), role.getUpdatedAt());
     }

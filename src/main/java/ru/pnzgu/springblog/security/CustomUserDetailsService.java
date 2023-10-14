@@ -11,6 +11,9 @@ import ru.pnzgu.springblog.repositories.UserRepository;
 
 import java.util.Collections;
 
+/**
+ * Кастомный UserDetailsService
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
@@ -20,6 +23,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Загружает информацию о пользователе по логину.
+     * 
+     * @param username логин пользователя
+     * @return объект UserDetails, содержащий информацию о пользователе
+     * @throws UsernameNotFoundException если пользователь не найден
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
