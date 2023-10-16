@@ -13,12 +13,15 @@ import ru.pnzgu.springblog.exceptions.AccessDeniedException;
 import ru.pnzgu.springblog.exceptions.EntityNotFoundException;
 import ru.pnzgu.springblog.exceptions.ValidationException;
 import ru.pnzgu.springblog.helpers.AuthFacade;
+import ru.pnzgu.springblog.helpers.ImageUtils;
 import ru.pnzgu.springblog.helpers.PageDtoMaker;
+import ru.pnzgu.springblog.models.Image;
 import ru.pnzgu.springblog.models.Post;
 import ru.pnzgu.springblog.repositories.PostRepository;
 import ru.pnzgu.springblog.repositories.UserRepository;
 import ru.pnzgu.springblog.services.PostService;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -30,13 +33,15 @@ public class PostServiceImpl implements PostService {
     private final AuthFacade authFacade;
     private final UserRepository userRepository;
     private final PageDtoMaker<Post, GetPostResponse> pageDtoMaker;
+    private final ImageUtils imageUtils;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, AuthFacade authFacade, UserRepository userRepository, PageDtoMaker<Post, GetPostResponse> pageDtoMaker) {
+    public PostServiceImpl(PostRepository postRepository, AuthFacade authFacade, UserRepository userRepository, PageDtoMaker<Post, GetPostResponse> pageDtoMaker, ImageUtils imageUtils) {
         this.postRepository = postRepository;
         this.authFacade = authFacade;
         this.userRepository = userRepository;
         this.pageDtoMaker = pageDtoMaker;
+        this.imageUtils = imageUtils;
     }
 
     /**
@@ -46,10 +51,12 @@ public class PostServiceImpl implements PostService {
      * @return идентификатор созданного поста 
      */
     @Override
-    public int create(CreatePostRequest request) {
+    public int create(CreatePostRequest request) throws IOException {
         var username = authFacade.getAuth().getName();
         var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        var post = new Post(user, request.getTitle(), request.getContent());
+        var file = request.getImage();
+        var image = new Image(file.getOriginalFilename(), file.getContentType(), imageUtils.compress(file.getBytes()));
+        var post = new Post(user, image, request.getTitle(), request.getContent());
         
         var newPost = postRepository.save(post);
         
@@ -68,6 +75,21 @@ public class PostServiceImpl implements PostService {
         var post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post not found"));
         
         return mapToResponse(post);
+    }
+
+    /**
+     * Получает изображение поста.
+     *
+     * @param postId идентификатор поста
+     * @return изображение поста
+     */
+    @Override
+    @Transactional
+    public byte[] getPostImage(int postId) {
+        var post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        var image = post.getImage();
+        
+        return imageUtils.decompress(image.getData());
     }
 
     /**

@@ -86,8 +86,9 @@ public class Post {
      * @param title   заголовок поста
      * @param content содержимое поста
      */
-    public Post(UserEntity user, String title, String content) {
+    public Post(UserEntity user, Image image, String title, String content) {
         this.user = user;
+        this.image = image;
         this.title = title;
         this.content = content;
     }

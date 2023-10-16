@@ -2,6 +2,7 @@ package ru.pnzgu.springblog.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.pnzgu.springblog.dto.common.PageDto;
@@ -10,6 +11,7 @@ import ru.pnzgu.springblog.dto.post.GetPostResponse;
 import ru.pnzgu.springblog.dto.post.UpdatePostRequest;
 import ru.pnzgu.springblog.services.PostService;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -32,7 +34,7 @@ public class PostController {
      * @return ответ с кодом состояния 200 (ОК) и идентификатором созданного поста 
      */
     @PostMapping
-    public ResponseEntity<Integer> create(@Valid @RequestBody CreatePostRequest request) {
+    public ResponseEntity<Integer> create(@Valid @ModelAttribute CreatePostRequest request) throws IOException {
         return ResponseEntity.ok(postService.create(request));
     }
 
@@ -45,6 +47,17 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<GetPostResponse> getById(@PathVariable int id) {
         return ResponseEntity.ok(postService.getById(id));
+    }
+
+    /**
+     * Получает изображение поста.
+     * 
+     * @param id идентификатор поста
+     * @return ответ с кодом состояния 200 (ОК), содержащим изображение поста с указанным идентификатором 
+     */
+    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getPostImage(@PathVariable int id) {
+        return ResponseEntity.ok(postService.getPostImage(id));
     }
 
     /**

@@ -5,6 +5,8 @@ import ru.pnzgu.springblog.dto.post.CreatePostRequest;
 import ru.pnzgu.springblog.dto.post.GetPostResponse;
 import ru.pnzgu.springblog.dto.post.UpdatePostRequest;
 
+import java.io.IOException;
+
 /**
  * Интерфейс сервиса постов.
  */
@@ -15,7 +17,7 @@ public interface PostService {
      * @param request запрос на создание поста 
      * @return идентификатор созданного поста 
      */
-    int create(CreatePostRequest request);
+    int create(CreatePostRequest request) throws IOException;
 
     /**
      * Получает пост по указанному идентификатору. 
@@ -24,6 +26,14 @@ public interface PostService {
      * @return пост с указанным идентификатором 
      */
     GetPostResponse getById(int id);
+
+    /**
+     * Получает изображение поста.
+     * 
+     * @param postId идентификатор поста
+     * @return изображение поста
+     */
+    byte[] getPostImage(int postId);
 
     /**
      * Получает все посты.

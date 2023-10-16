@@ -3,6 +3,7 @@ package ru.pnzgu.springblog.dto.post;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Класс, представляющий запрос на создание поста. 
@@ -22,4 +23,9 @@ public class CreatePostRequest {
      */
     @NotBlank
     private String content;
+
+    /**
+     * Изображение поста.
+     */
+    private MultipartFile image;
 }
