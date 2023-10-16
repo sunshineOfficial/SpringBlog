@@ -31,6 +31,13 @@ public class UserEntity {
     private Role role;
 
     /**
+     * Аватар пользователя.
+     */
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    private Image avatar;
+
+    /**
      * Посты пользователя.
      */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -87,8 +94,9 @@ public class UserEntity {
      * @param firstName имя пользователя
      * @param lastName  фамилия пользователя
      */
-    public UserEntity(Role role, String username, String password, String firstName, String lastName) {
+    public UserEntity(Role role, Image avatar, String username, String password, String firstName, String lastName) {
         this.role = role;
+        this.avatar = avatar;
         this.username = username;
         this.password = password;
         this.firstName = firstName;

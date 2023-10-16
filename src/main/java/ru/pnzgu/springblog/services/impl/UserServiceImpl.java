@@ -1,5 +1,6 @@
 package ru.pnzgu.springblog.services.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +14,7 @@ import ru.pnzgu.springblog.exceptions.AccessDeniedException;
 import ru.pnzgu.springblog.exceptions.EntityNotFoundException;
 import ru.pnzgu.springblog.exceptions.ValidationException;
 import ru.pnzgu.springblog.helpers.AuthFacade;
+import ru.pnzgu.springblog.helpers.ImageUtils;
 import ru.pnzgu.springblog.helpers.PageDtoMaker;
 import ru.pnzgu.springblog.models.UserEntity;
 import ru.pnzgu.springblog.repositories.RoleRepository;
@@ -29,15 +31,17 @@ public class UserServiceImpl implements UserService {
     private final AuthFacade authFacade;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ImageUtils imageUtils;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PageDtoMaker<UserEntity, GetUserResponse> pageDtoMaker,
-                           AuthFacade authFacade, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+                           AuthFacade authFacade, PasswordEncoder passwordEncoder, RoleRepository roleRepository, ImageUtils imageUtils) {
         this.userRepository = userRepository;
         this.pageDtoMaker = pageDtoMaker;
         this.authFacade = authFacade;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.imageUtils = imageUtils;
     }
 
     /**
@@ -51,6 +55,21 @@ public class UserServiceImpl implements UserService {
         var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         return mapToResponse(user);
+    }
+
+    /**
+     * Получает аватар пользователя, отправившего запрос.
+     *
+     * @return аватар пользователя
+     */
+    @Override
+    @Transactional
+    public byte[] getCurrentUserAvatar() {
+        var username = authFacade.getAuth().getName();
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        var avatar = user.getAvatar();
+        
+        return imageUtils.decompress(avatar.getData());
     }
 
     /**

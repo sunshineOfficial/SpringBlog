@@ -2,6 +2,7 @@ package ru.pnzgu.springblog.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.pnzgu.springblog.dto.common.PageDto;
@@ -33,6 +34,16 @@ public class UserController {
     @GetMapping("/current")
     public ResponseEntity<GetUserResponse> getCurrentUser() {
         return ResponseEntity.ok(userService.getCurrentUser());
+    }
+
+    /**
+     * Получает аватар пользователя, отправившего запрос. 
+     *
+     * @return ответ с кодом состояния 200 (ОК), содержащим аватар пользователя
+     */
+    @GetMapping(value = "/current/avatar", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getCurrentUserAvatar() {
+        return ResponseEntity.ok(userService.getCurrentUserAvatar());
     }
 
     /**

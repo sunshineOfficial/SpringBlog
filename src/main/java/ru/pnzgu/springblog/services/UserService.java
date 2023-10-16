@@ -17,6 +17,13 @@ public interface UserService {
     GetUserResponse getCurrentUser();
 
     /**
+     * Получает аватар пользователя, отправившего запрос. 
+     *
+     * @return аватар пользователя
+     */
+    byte[] getCurrentUserAvatar();
+
+    /**
      * Получает пользователя по указанному идентификатору. 
      *
      * @param id идентификатор пользователя 

@@ -31,6 +31,13 @@ public class Post {
     private UserEntity user;
 
     /**
+     * Изображение в посте.
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id")
+    private Image image;
+
+    /**
      * Комментарии, относящиеся к посту.
      */
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,5 +1,6 @@
 package ru.pnzgu.springblog.services.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,12 +11,16 @@ import ru.pnzgu.springblog.dto.auth.LoginResponse;
 import ru.pnzgu.springblog.dto.auth.RegisterRequest;
 import ru.pnzgu.springblog.exceptions.EntityAlreadyExistsException;
 import ru.pnzgu.springblog.exceptions.EntityNotFoundException;
+import ru.pnzgu.springblog.helpers.ImageUtils;
+import ru.pnzgu.springblog.models.Image;
 import ru.pnzgu.springblog.models.UserEntity;
 import ru.pnzgu.springblog.repositories.RoleRepository;
 import ru.pnzgu.springblog.repositories.UserRepository;
 import ru.pnzgu.springblog.helpers.AuthFacade;
 import ru.pnzgu.springblog.security.JwtGenerator;
 import ru.pnzgu.springblog.services.AuthService;
+
+import java.io.IOException;
 
 /**
  * Класс сервиса аутентификации и регистрации пользователей.
@@ -28,16 +33,18 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final AuthFacade authFacade;
     private final JwtGenerator jwtGenerator;
+    private final ImageUtils imageUtils;
 
     @Autowired
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository,
-                           AuthenticationManager authenticationManager, AuthFacade authFacade, JwtGenerator jwtGenerator) {
+                           AuthenticationManager authenticationManager, AuthFacade authFacade, JwtGenerator jwtGenerator, ImageUtils imageUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
         this.authFacade = authFacade;
         this.jwtGenerator = jwtGenerator;
+        this.imageUtils = imageUtils;
     }
 
 
@@ -48,12 +55,15 @@ public class AuthServiceImpl implements AuthService {
      * @return идентификатор зарегистрированного пользователя
      */
     @Override
-    public int register(RegisterRequest request) {
+    @Transactional
+    public int register(RegisterRequest request) throws IOException {
         if (userRepository.existsByUsername(request.getUsername()))
             throw new EntityAlreadyExistsException("Username is taken");
 
         var role = roleRepository.findByName("USER").orElseThrow(() -> new EntityNotFoundException("Role not found"));
-        var user = new UserEntity(role, request.getUsername(), passwordEncoder.encode(request.getPassword()),
+        var avatar = request.getAvatar();
+        var image = new Image(avatar.getOriginalFilename(), avatar.getContentType(), imageUtils.compress(avatar.getBytes()));
+        var user = new UserEntity(role, image, request.getUsername(), passwordEncoder.encode(request.getPassword()),
                 request.getFirstName(), request.getLastName());
         
         var newUser = userRepository.save(user);

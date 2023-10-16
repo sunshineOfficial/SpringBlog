@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Класс, представляющий запрос на регистрацию пользователя. 
@@ -41,4 +42,9 @@ public class RegisterRequest {
      */
     @NotBlank
     private String lastName;
+
+    /**
+     * Аватар пользователя.
+     */
+    private MultipartFile avatar;
 }
