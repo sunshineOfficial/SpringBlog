@@ -1,9 +1,12 @@
 package ru.pnzgu.springblog.services;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.pnzgu.springblog.dto.common.PageDto;
 import ru.pnzgu.springblog.dto.user.ChangeRoleRequest;
 import ru.pnzgu.springblog.dto.user.ChangeUserPasswordRequest;
 import ru.pnzgu.springblog.dto.user.GetUserResponse;
+
+import java.io.IOException;
 
 /**
  * Интерфейс сервиса пользователей.
@@ -76,6 +79,14 @@ public interface UserService {
      * @return обновленного пользователя
      */
     GetUserResponse changeRole(int id, ChangeRoleRequest request);
+
+    /**
+     * Меняет аватар пользователя.
+     * 
+     * @param avatar новый аватар пользователя
+     * @return обновленного пользователя
+     */
+    GetUserResponse changeAvatar(MultipartFile avatar) throws IOException;
 
     /**
      * Удаляет пользователя по указанному идентификатору. 

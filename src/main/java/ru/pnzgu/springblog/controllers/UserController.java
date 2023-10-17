@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.pnzgu.springblog.dto.common.PageDto;
 import ru.pnzgu.springblog.dto.user.ChangeRoleRequest;
 import ru.pnzgu.springblog.dto.user.ChangeUserPasswordRequest;
 import ru.pnzgu.springblog.dto.user.GetUserResponse;
 import ru.pnzgu.springblog.services.UserService;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -100,6 +102,17 @@ public class UserController {
     @PutMapping("/{id}/role")
     public ResponseEntity<GetUserResponse> changeRole(@PathVariable int id, @Valid @RequestBody ChangeRoleRequest request) {
         return ResponseEntity.ok(userService.changeRole(id, request));
+    }
+
+    /**
+     * Меняет аватар пользователя.
+     *
+     * @param avatar новый аватар пользователя
+     * @return ответ с кодом состояния 200 (ОК), содержащим обновленного пользователя
+     */
+    @PutMapping("/current/avatar")
+    public ResponseEntity<GetUserResponse> changeAvatar(@ModelAttribute MultipartFile avatar) throws IOException {
+        return ResponseEntity.ok(userService.changeAvatar(avatar));
     }
 
     /**

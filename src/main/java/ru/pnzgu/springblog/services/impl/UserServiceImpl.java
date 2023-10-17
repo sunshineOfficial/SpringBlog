@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.pnzgu.springblog.dto.common.PageDto;
 import ru.pnzgu.springblog.dto.user.ChangeRoleRequest;
 import ru.pnzgu.springblog.dto.user.ChangeUserPasswordRequest;
@@ -16,10 +17,14 @@ import ru.pnzgu.springblog.exceptions.ValidationException;
 import ru.pnzgu.springblog.helpers.AuthFacade;
 import ru.pnzgu.springblog.helpers.ImageUtils;
 import ru.pnzgu.springblog.helpers.PageDtoMaker;
+import ru.pnzgu.springblog.models.Image;
 import ru.pnzgu.springblog.models.UserEntity;
+import ru.pnzgu.springblog.repositories.ImageRepository;
 import ru.pnzgu.springblog.repositories.RoleRepository;
 import ru.pnzgu.springblog.repositories.UserRepository;
 import ru.pnzgu.springblog.services.UserService;
+
+import java.io.IOException;
 
 /**
  * Класс сервиса пользователей.
@@ -32,16 +37,18 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final ImageUtils imageUtils;
+    private final ImageRepository imageRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PageDtoMaker<UserEntity, GetUserResponse> pageDtoMaker,
-                           AuthFacade authFacade, PasswordEncoder passwordEncoder, RoleRepository roleRepository, ImageUtils imageUtils) {
+                           AuthFacade authFacade, PasswordEncoder passwordEncoder, RoleRepository roleRepository, ImageUtils imageUtils, ImageRepository imageRepository) {
         this.userRepository = userRepository;
         this.pageDtoMaker = pageDtoMaker;
         this.authFacade = authFacade;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.imageUtils = imageUtils;
+        this.imageRepository = imageRepository;
     }
 
     /**
@@ -178,6 +185,27 @@ public class UserServiceImpl implements UserService {
         var updatedUser = userRepository.save(user);
 
         return mapToResponse(updatedUser);
+    }
+
+    /**
+     * Меняет аватар пользователя.
+     *
+     * @param avatar новый аватар пользователя
+     * @return обновленного пользователя
+     */
+    @Override
+    @Transactional
+    public GetUserResponse changeAvatar(MultipartFile avatar) throws IOException {
+        var username = authFacade.getAuth().getName();
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        imageRepository.delete(user.getAvatar());
+        
+        var image = new Image(avatar.getOriginalFilename(), avatar.getContentType(), imageUtils.compress(avatar.getBytes()));
+        user.setAvatar(image);
+        
+        var updatedUser = userRepository.save(user);
+        
+        return mapToResponse(user);
     }
 
     /**
