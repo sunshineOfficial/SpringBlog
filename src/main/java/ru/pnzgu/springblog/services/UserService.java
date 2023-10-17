@@ -35,6 +35,14 @@ public interface UserService {
     GetUserResponse getById(int id);
 
     /**
+     * Получает аватар пользователя. 
+     *
+     * @param id идентификатор пользователя
+     * @return аватар пользователя
+     */
+    byte[] getUserAvatar(int id);
+
+    /**
      * Получает всех пользователей.
      *
      * @param pageNumber номер страницы

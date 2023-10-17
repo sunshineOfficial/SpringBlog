@@ -60,6 +60,16 @@ public class UserController {
     }
 
     /**
+     * Получает аватар пользователя. 
+     *
+     * @return ответ с кодом состояния 200 (ОК), содержащим аватар пользователя
+     */
+    @GetMapping(value = "/{id}/avatar", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getUserAvatar(@PathVariable int id) {
+        return ResponseEntity.ok(userService.getUserAvatar(id));
+    }
+
+    /**
      * Возвращает список пользователей с возможностью фильтрации по параметрам. 
      *
      * @param pageNumber номер страницы 

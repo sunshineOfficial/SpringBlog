@@ -93,6 +93,21 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * Получает аватар пользователя.
+     *
+     * @param id идентификатор пользователя
+     * @return аватар пользователя
+     */
+    @Override
+    @Transactional
+    public byte[] getUserAvatar(int id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        var avatar = user.getAvatar();
+
+        return imageUtils.decompress(avatar.getData());
+    }
+
+    /**
      * Получает всех пользователей.
      *
      * @param pageNumber номер страницы
