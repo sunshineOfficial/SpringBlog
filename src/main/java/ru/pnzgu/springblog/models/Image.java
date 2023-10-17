@@ -34,13 +34,13 @@ public class Image {
     /**
      * Название изображения.
      */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
     /**
      * Тип изображения.
      */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String type;
 
     /**
