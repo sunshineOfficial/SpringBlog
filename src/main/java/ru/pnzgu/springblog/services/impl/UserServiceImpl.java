@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
         
         var updatedUser = userRepository.save(user);
         
-        return mapToResponse(user);
+        return mapToResponse(updatedUser);
     }
 
     /**

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.pnzgu.springblog.dto.common.PageDto;
 import ru.pnzgu.springblog.dto.post.CreatePostRequest;
 import ru.pnzgu.springblog.dto.post.GetPostResponse;
@@ -17,6 +18,7 @@ import ru.pnzgu.springblog.helpers.ImageUtils;
 import ru.pnzgu.springblog.helpers.PageDtoMaker;
 import ru.pnzgu.springblog.models.Image;
 import ru.pnzgu.springblog.models.Post;
+import ru.pnzgu.springblog.repositories.ImageRepository;
 import ru.pnzgu.springblog.repositories.PostRepository;
 import ru.pnzgu.springblog.repositories.UserRepository;
 import ru.pnzgu.springblog.services.PostService;
@@ -34,14 +36,16 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final PageDtoMaker<Post, GetPostResponse> pageDtoMaker;
     private final ImageUtils imageUtils;
+    private final ImageRepository imageRepository;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, AuthFacade authFacade, UserRepository userRepository, PageDtoMaker<Post, GetPostResponse> pageDtoMaker, ImageUtils imageUtils) {
+    public PostServiceImpl(PostRepository postRepository, AuthFacade authFacade, UserRepository userRepository, PageDtoMaker<Post, GetPostResponse> pageDtoMaker, ImageUtils imageUtils, ImageRepository imageRepository) {
         this.postRepository = postRepository;
         this.authFacade = authFacade;
         this.userRepository = userRepository;
         this.pageDtoMaker = pageDtoMaker;
         this.imageUtils = imageUtils;
+        this.imageRepository = imageRepository;
     }
 
     /**
@@ -207,6 +211,33 @@ public class PostServiceImpl implements PostService {
         
         post.setPublished(true);
         post.setPublishedAt(new Date());
+
+        var updatedPost = postRepository.save(post);
+
+        return mapToResponse(updatedPost);
+    }
+
+    /**
+     * Меняет изображение поста.
+     *
+     * @param id    идентификатор поста
+     * @param image новое изображение поста
+     * @return обновленный пост
+     */
+    @Override
+    @Transactional
+    public GetPostResponse changeImage(int id, MultipartFile image) throws IOException {
+        var username = authFacade.getAuth().getName();
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        var post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post not found"));
+
+        if (user.getId() != post.getUser().getId())
+            throw new ValidationException("You must be the owner of the post");
+
+        imageRepository.delete(post.getImage());
+        
+        var imageDb = new Image(image.getOriginalFilename(), image.getContentType(), imageUtils.compress(image.getBytes()));
+        post.setImage(imageDb);
 
         var updatedPost = postRepository.save(post);
 

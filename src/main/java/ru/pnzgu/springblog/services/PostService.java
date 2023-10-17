@@ -1,5 +1,6 @@
 package ru.pnzgu.springblog.services;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.pnzgu.springblog.dto.common.PageDto;
 import ru.pnzgu.springblog.dto.post.CreatePostRequest;
 import ru.pnzgu.springblog.dto.post.GetPostResponse;
@@ -91,6 +92,15 @@ public interface PostService {
      * @return опубликованный пост
      */
     GetPostResponse publish(int id);
+
+    /**
+     * Меняет изображение поста.
+     *
+     * @param id    идентификатор поста
+     * @param image новое изображение поста
+     * @return обновленный пост
+     */
+    GetPostResponse changeImage(int id, MultipartFile image) throws IOException;
 
     /**
      * Удаляет пост по указанному идентификатору. 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.pnzgu.springblog.dto.common.PageDto;
 import ru.pnzgu.springblog.dto.post.CreatePostRequest;
 import ru.pnzgu.springblog.dto.post.GetPostResponse;
@@ -110,6 +111,18 @@ public class PostController {
     @PutMapping("/{id}/publish")
     public ResponseEntity<GetPostResponse> publish(@PathVariable int id) {
         return ResponseEntity.ok(postService.publish(id));
+    }
+
+    /**
+     * Меняет изображение поста.
+     *
+     * @param id    идентификатор поста
+     * @param image новое изображение поста
+     * @return ответ с кодом состояния 200 (ОК), содержащим обновленный пост
+     */
+    @PutMapping("/{id}/image")
+    public ResponseEntity<GetPostResponse> changeImage(@PathVariable int id, @ModelAttribute MultipartFile image) throws IOException {
+        return ResponseEntity.ok(postService.changeImage(id, image));
     }
 
     /**
